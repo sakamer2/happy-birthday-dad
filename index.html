@@ -160,6 +160,18 @@
       transform: translateY(0);
     }
 
+    #finalTributeBtn {
+      background: linear-gradient(135deg, #7a1f1d, #b8860b);
+      border-color: #ffd700;
+      color: #fff9e6;
+      box-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
+      animation: royalGlow 2s infinite alternate;
+    }
+    @keyframes royalGlow {
+      0% { box-shadow: 0 0 6px rgba(255, 215, 0, 0.4); transform: scale(1); }
+      100% { box-shadow: 0 0 16px rgba(255, 215, 0, 0.9); transform: scale(1.03); }
+    }
+
     /* Main Container */
     .game-container {
       display: flex;
@@ -909,7 +921,7 @@
         <button class="medieval-btn" id="soundBtn" onclick="toggleSound()">🔊 Sound: ON</button>
         <button class="medieval-btn" onclick="checkCurrentWord()">⚔️ Check Word</button>
         <button class="medieval-btn" onclick="revealLetter()">💡 Reveal Letter</button>
-        <button class="medieval-btn" onclick="showGrandPresentPrompt()">👑 Final Tribute</button>
+        <button class="medieval-btn" id="finalTributeBtn" style="display: none;" onclick="showGrandPresentPrompt(true)">👑 Final Tribute</button>
         <button class="medieval-btn" style="border-color:#b84d4d; color:#ffb3b3;" onclick="resetQuest()">🔄 Start Over</button>
       </div>
     </div>
@@ -1653,10 +1665,23 @@
       document.getElementById('progressCount').textContent = count;
       const pct = (count / WORDS.length) * 100;
       document.getElementById('progressFill').style.width = pct + '%';
+
+      const tributeBtn = document.getElementById('finalTributeBtn');
+      if (tributeBtn) {
+        if (count === WORDS.length) {
+          tributeBtn.style.display = 'inline-flex';
+        } else {
+          tributeBtn.style.display = 'none';
+        }
+      }
     }
 
     // --- Grand Finale ---
-    function showGrandPresentPrompt() {
+    function showGrandPresentPrompt(allowAlways = false) {
+      if (!allowAlways && solvedWords.size < WORDS.length) {
+        alert('🔒 The Final Tribute is locked! Complete all 19 clues in the Royal Crossword to unlock the Grand Prize!');
+        return;
+      }
       playFanfare();
       triggerConfetti(150);
       const grandModal = document.getElementById('grandModal');
